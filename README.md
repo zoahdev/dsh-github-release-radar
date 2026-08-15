@@ -2,6 +2,9 @@
 
 [English](#english) · [中文](#中文)
 
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+[![Release](https://img.shields.io/github/v/release/zoahdev/dsh-github-release-radar)](https://github.com/zoahdev/dsh-github-release-radar/releases)
+
 GitHub Release Radar is a plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) that gives your agent three model-facing tools over the public GitHub REST API — no API key required.
 
 > Topic: [`dsh-plugin`](https://github.com/topics/dsh-plugin) · Tested with `dsh` 0.1.0-rc.6
@@ -106,6 +109,9 @@ MIT © 2026 zoahdev
 ---
 
 ## 中文
+
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+[![Release](https://img.shields.io/github/v/release/zoahdev/dsh-github-release-radar)](https://github.com/zoahdev/dsh-github-release-radar/releases)
 
 **dsh-github-release-radar（GitHub Release 雷达）** 是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的社区插件，通过 GitHub 公开 REST API 给 agent 提供三个模型可直接调用的工具——无需任何 API Key。
 
