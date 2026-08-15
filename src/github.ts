@@ -50,6 +50,14 @@ export interface GitHubRepoHit {
   htmlUrl: string
 }
 
+/** A normalized Git tag of a public repository. */
+export interface GitHubTag {
+  name: string
+  sha: string
+  tarballUrl: string | null
+  zipballUrl: string | null
+}
+
 const API_ROOT = 'https://api.github.com'
 
 function asString(value: unknown): string | null {
@@ -140,6 +148,14 @@ export class GitHubClient {
     return items.map((entry) => this.parseRepoHit(entry))
   }
 
+  /** List the most recent Git tags of a public repository. */
+  async listTags(owner: string, repo: string, limit: number, signal: AbortSignal): Promise<GitHubTag[]> {
+    const perPage = Math.min(Math.max(Math.trunc(limit), 1), 50)
+    const path = `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/tags?per_page=${perPage}`
+    const data = await this.request<unknown[]>(path, signal)
+    return data.map((entry) => this.parseTag(entry))
+  }
+
   private parseRelease(entry: unknown): GitHubRelease {
     const raw = entry as Record<string, unknown>
     return {
@@ -177,6 +193,17 @@ export class GitHubClient {
       language: asString(raw.language),
       updatedAt: asString(raw.updated_at),
       htmlUrl: asString(raw.html_url) ?? '',
+    }
+  }
+
+  private parseTag(entry: unknown): GitHubTag {
+    const raw = entry as Record<string, unknown>
+    const commit = raw.commit as Record<string, unknown> | null
+    return {
+      name: asString(raw.name) ?? 'unknown',
+      sha: commit !== null && typeof commit === 'object' ? asString(commit.sha) ?? '' : '',
+      tarballUrl: asString(raw.tarball_url),
+      zipballUrl: asString(raw.zipball_url),
     }
   }
 }
