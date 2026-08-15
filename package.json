@@ -1,7 +1,7 @@
 {
   "name": "dsh-github-release-radar",
-  "version": "0.1.0",
-  "description": "GitHub Release Radar for DeepSeek Harness: query releases, repo stats, and repository search without an API key.",
+  "version": "0.2.0",
+  "description": "GitHub Release Radar for DeepSeek Harness: query releases, repo stats, repository search, and Git tags without an API key.",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
