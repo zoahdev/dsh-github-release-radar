@@ -1,0 +1,13 @@
+# dsh-github-release-radar
+
+> GitHub Release Radar for DeepSeek Harness: query releases, repo stats, and repository search from inside dsh agents — no API key required.
+
+## Key facts
+
+- Tools: `github_releases` (releases with body previews), `github_repo` (stars/forks/language/license/activity), `github_search` (repository search)
+- Install: `dsh plugin --profile web add github:zoahdev/dsh-github-release-radar` (see GitHub Releases for tarballs)
+- Verification: unit tests + real install into a fresh DSH profile
+
+## Community
+
+- RFC #1629 context: https://github.com/deepseek-ai/deepseek-harness/discussions/1629
