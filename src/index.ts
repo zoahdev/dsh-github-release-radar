@@ -1,8 +1,8 @@
 /**
  * GitHub Release Radar — a DeepSeek Harness plugin.
  *
- * Registers three model-facing tools over the public GitHub REST API:
- * `github_releases`, `github_repo`, and `github_search`. Everything is
+ * Registers four model-facing tools over the public GitHub REST API:
+ * `github_releases`, `github_repo`, `github_search`, and `github_repo_tags`. Everything is
  * configurable through cordis.yml and every request honors cancellation.
  * @module dsh-github-release-radar
  */
@@ -10,7 +10,7 @@
 import type { Context } from '@deepseek-ai/cordis'
 import Schema from '@deepseek-ai/schemastery'
 import { defineTool } from '@deepseek-ai/dsh-tools'
-import { GitHubClient, type GitHubClientOptions, type GitHubRelease, type GitHubRepo, type GitHubRepoHit } from './github.js'
+import { GitHubClient, type GitHubClientOptions, type GitHubRelease, type GitHubRepo, type GitHubRepoHit, type GitHubTag } from './github.js'
 
 export const name = 'github-release-radar'
 
@@ -37,7 +37,7 @@ export const Config: Schema<Config> = Schema.object({
   timeoutMs: Schema.number().default(10_000),
   defaultLimit: Schema.number().default(5),
   bodyPreviewChars: Schema.number().default(500),
-  userAgent: Schema.string().default('dsh-github-release-radar/0.1.0'),
+  userAgent: Schema.string().default('dsh-github-release-radar/0.2.0'),
 })
 
 function assertPositiveInteger(name: string, value: number): void {
@@ -83,9 +83,15 @@ function renderSearch(value: { query: string; items: GitHubRepoHit[] }): string 
   return `Top results for "${value.query}":\n${lines.join('\n')}`
 }
 
+function renderTags(value: { fullName: string; tags: GitHubTag[] }): string {
+  if (value.tags.length === 0) return `No tags found for ${value.fullName}.`
+  const lines = value.tags.map((tag) => `- ${tag.name} (${tag.sha.slice(0, 7)})`)
+  return `Recent tags for ${value.fullName}:\n${lines.join('\n')}`
+}
+
 function clientOptions(config: Config): GitHubClientOptions {
   const options: GitHubClientOptions = {
-    userAgent: config.userAgent ?? 'dsh-github-release-radar/0.1.0',
+    userAgent: config.userAgent ?? 'dsh-github-release-radar/0.2.0',
     timeoutMs: config.timeoutMs ?? 10_000,
     bodyPreviewChars: config.bodyPreviewChars ?? 500,
   }
@@ -224,7 +230,49 @@ export function defineTools(config: Config) {
     presentCall: (args) => ({ card: 'generic', title: `GitHub search: ${args.query}`, kind: 'search', rawInput: args }),
   })
 
-  return [releases, repo, search] as const
+  const tags = defineTool({
+    name: 'github_repo_tags',
+    description:
+      'List the most recent Git tags of a public GitHub repository with their commit SHAs. '
+      + 'Use it to check version history or the latest release candidate tags.',
+    parameters: {
+      owner: { type: 'string', required: true, description: 'Repository owner.' },
+      repo: { type: 'string', required: true, description: 'Repository name.' },
+      limit: { type: 'number', description: 'How many tags to return (1-50). Defaults to the configured defaultLimit (5).' },
+    },
+    output: {
+      schema: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          fullName: { type: 'string', required: true },
+          tags: {
+            type: 'array',
+            required: true,
+            items: {
+              type: 'object',
+              additionalProperties: false,
+              properties: {
+                name: { type: 'string', required: true },
+                sha: { type: 'string', required: true },
+                tarballUrl: { oneOf: [{ type: 'string' }, { type: 'null' }], required: true },
+                zipballUrl: { oneOf: [{ type: 'string' }, { type: 'null' }], required: true },
+              },
+            },
+          },
+        },
+      },
+      render: (_args, value) => [{ type: 'text', text: renderTags(value) }],
+    },
+    async execute(args, exec) {
+      assertOwnerRepo(args.owner, args.repo)
+      const tags = await client.listTags(args.owner, args.repo, clampLimit(args.limit ?? config.defaultLimit ?? 5), exec.signal)
+      return { fullName: `${args.owner}/${args.repo}`, tags }
+    },
+    presentCall: (args) => ({ card: 'generic', title: `GitHub tags: ${args.owner}/${args.repo}`, kind: 'search', rawInput: args }),
+  })
+
+  return [releases, repo, search, tags] as const
 }
 
 /**
