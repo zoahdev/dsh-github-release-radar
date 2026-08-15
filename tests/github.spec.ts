@@ -130,4 +130,20 @@ describe('GitHubClient', () => {
     expect(fetchMock.mock.calls[0]?.[0]).toBe(`${BASE}/search/repositories?q=agent%20framework&sort=stars&order=desc&per_page=5`)
     expect(hits[0]).toMatchObject({ fullName: 'a/b', stars: 9 })
   })
+
+  it('lists repository tags with commit shas', async () => {
+    const fetchMock = vi.fn(async () => jsonResponse([
+      {
+        name: 'v0.1.0',
+        commit: { sha: 'abc123' },
+        tarball_url: 'https://api.github.com/repos/a/b/tarball/v0.1.0',
+        zipball_url: null,
+      },
+    ]))
+    vi.stubGlobal('fetch', fetchMock)
+
+    const tags = await makeClient().listTags('a', 'b', 5, new AbortController().signal)
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(`${BASE}/repos/a/b/tags?per_page=5`)
+    expect(tags[0]).toMatchObject({ name: 'v0.1.0', sha: 'abc123', zipballUrl: null })
+  })
 })
