@@ -5,7 +5,7 @@
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 [![Release](https://img.shields.io/github/v/release/zoahdev/dsh-github-release-radar)](https://github.com/zoahdev/dsh-github-release-radar/releases)
 
-GitHub Release Radar is a plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) that gives your agent three model-facing tools over the public GitHub REST API — no API key required.
+GitHub Release Radar is a plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) that gives your agent four model-facing tools over the public GitHub REST API — no API key required.
 
 > Topic: [`dsh-plugin`](https://github.com/topics/dsh-plugin) · Tested with `dsh` 0.1.0-rc.6
 
@@ -16,6 +16,7 @@ GitHub Release Radar is a plugin for [DeepSeek Harness](https://github.com/deeps
 | `github_releases` | List the most recent releases of a public repository (tag, date, pre-release flag, URL, body preview). |
 | `github_repo` | Repository overview: stars, forks, open issues, language, license, last update. |
 | `github_search` | Search public repositories with GitHub search syntax, sorted by stars or last update. |
+| `github_repo_tags` | List the most recent Git tags of a public repository with their commit SHAs. |
 
 Example agent prompts:
 
@@ -40,7 +41,7 @@ First-time git installs require an allow-build entry; `dsh` will print the exact
 ```sh
 dsh plugin --profile web add dsh-github-release-radar
 # or
-dsh plugin --profile web add ./dsh-github-release-radar-0.1.0.tgz
+dsh plugin --profile web add ./dsh-github-release-radar-0.2.0.tgz
 ```
 
 Then restart `dsh web`.
@@ -70,7 +71,7 @@ All values are optional and can be set in `cordis.yml`:
 | `timeoutMs` | number | `10000` | Request timeout in milliseconds. |
 | `defaultLimit` | number | `5` | Default result count when the model omits `limit`. |
 | `bodyPreviewChars` | number | `500` | Maximum characters kept from a release body preview. |
-| `userAgent` | string | `dsh-github-release-radar/0.1.0` | User-Agent header sent to the GitHub API. |
+| `userAgent` | string | `dsh-github-release-radar/0.2.0` | User-Agent header sent to the GitHub API. |
 
 Example:
 
@@ -124,6 +125,7 @@ MIT © 2026 zoahdev
 | `github_releases` | 列出公开仓库最近的 Release（标签、日期、预发布标记、链接、正文预览）。 |
 | `github_repo` | 仓库概览：星标、fork、open issues、语言、许可证、最近更新时间。 |
 | `github_search` | 用 GitHub 搜索语法搜公开仓库，按星标或最近更新排序。 |
+| `github_repo_tags` | 列出公开仓库最近的 Git 标签及其提交 SHA。 |
 
 示例提问：
 
@@ -141,7 +143,7 @@ dsh plugin --profile web add github:zoahdev/dsh-github-release-radar
 
 # 或从 npm / tarball 安装
 dsh plugin --profile web add dsh-github-release-radar
-dsh plugin --profile web add ./dsh-github-release-radar-0.1.0.tgz
+dsh plugin --profile web add ./dsh-github-release-radar-0.2.0.tgz
 ```
 
 首次从 git 安装需要允许构建脚本（`dsh` 会提示你向 profile 的 `pnpm-workspace.yaml` 添加哪一行）。装完重启 `dsh web`。
@@ -156,7 +158,7 @@ dsh plugin --profile web add ./dsh-github-release-radar-0.1.0.tgz
 | `timeoutMs` | number | `10000` | 请求超时（毫秒）。 |
 | `defaultLimit` | number | `5` | 模型未传 `limit` 时的默认返回条数。 |
 | `bodyPreviewChars` | number | `500` | Release 正文预览最大字符数。 |
-| `userAgent` | string | `dsh-github-release-radar/0.1.0` | 请求 GitHub API 的 User-Agent。 |
+| `userAgent` | string | `dsh-github-release-radar/0.2.0` | 请求 GitHub API 的 User-Agent。 |
 
 ## 开发
 
