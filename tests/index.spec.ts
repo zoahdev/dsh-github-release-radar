@@ -35,7 +35,7 @@ describe('plugin registration', () => {
     const registered: unknown[] = []
     const ctx = { tools: { register: (tool: unknown) => { registered.push(tool) } } } as never
     apply(ctx, resolvedConfig())
-    expect(registered).toHaveLength(3)
+    expect(registered).toHaveLength(4)
   })
 
   it('rejects non-positive integer configuration', () => {
