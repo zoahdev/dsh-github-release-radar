@@ -39,6 +39,6 @@ Result: `dsh web: http://127.0.0.1:4099`; `GET /` returns HTTP 200 (12,076 bytes
 
 `@deepseek-ai/dsh-tools` on npm has both `0.0.1-rc.x` and `0.1.0-rc.x` releases; the `latest` dist-tag points at `0.0.1-rc.1`, whose peer `@deepseek-ai/dsh-user-approval@0.0.1-rc.1` depends on the unpublished `@deepseek-ai/dsh-type-meta` and cannot be installed standalone. This plugin targets `@deepseek-ai/dsh-tools ^0.1.0-rc.6`, matching the current `dsh` 0.1.0-rc.6 release train.
 
-## Known verification gap (documented 2026-08-15)
+## Agent-visibility verification (2026-08-15)
 
-CI proves load, registration through `apply()/ctx.tools.register`, real handler execution, and a fresh-profile install + `dsh web` boot. It does not yet prove in-session agent visibility of the tools — under dual-instance shadowing (discussions #1697/#1782) a plugin can register into a shadowed ToolRuntime agents never read. Use dsh-plugin-doctor `--profile` to detect that precondition; in-session visibility verification is planned.
+`scripts/visibility-check.mjs` mounts a REAL Cordis context, the REAL `@deepseek-ai/dsh-tools` ToolRuntime, and a real scoped agent context, applies the plugin through the real registration path, and asserts all four tools are visible in `ctx.tools.schemas(scope)`. This closes the registry-level half of the dual-instance concern (discussions #1697/#1782); the remaining caveat is that a full interactive agent session is not exercised in CI.
