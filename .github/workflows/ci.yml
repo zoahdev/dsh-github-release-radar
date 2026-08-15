@@ -1,0 +1,68 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-and-load:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Build
+        run: pnpm run build
+      - name: Unit tests
+        run: pnpm test
+      - name: Pack
+        run: pnpm pack
+      - name: Real-registry agent-visibility check
+        run: node scripts/visibility-check.mjs
+
+  dsh-smoke:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build + pack
+        run: |
+          pnpm run build
+          pnpm pack
+      - name: Fresh DSH profile install + boot smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          TGZ="$(ls dsh-github-release-radar-*.tgz | head -n1)"
+          TMP="$(mktemp -d)"
+          export DSH_HOME="$TMP/dsh-home"
+          pnpm dlx @deepseek-ai/dsh plugin --profile web add "./$TGZ"
+          pnpm dlx @deepseek-ai/dsh --profile web --dump-config | grep -q 'github-release-radar'
+          echo "PASS plugin appears in DSH config"
+          pnpm dlx @deepseek-ai/dsh web --port 4099 >"$TMP/web.log" 2>&1 &
+          WEB_PID=$!
+          ready=0
+          for _ in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:4099 >/dev/null 2>&1; then ready=1; break; fi
+            if ! kill -0 "$WEB_PID" 2>/dev/null; then break; fi
+            sleep 1
+          done
+          kill "$WEB_PID" 2>/dev/null || true
+          if [ "$ready" -ne 1 ]; then cat "$TMP/web.log"; exit 1; fi
+          echo "PASS dsh web booted with the plugin loaded (HTTP 200)"
