@@ -1,10 +1,10 @@
 # dsh-github-release-radar
 
-[English](#english) ? [??](#??)
+[English](#english) · [中文](#中文)
 
-GitHub Release Radar is a plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) that gives your agent three model-facing tools over the public GitHub REST API ? no API key required.
+GitHub Release Radar is a plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (`dsh`) that gives your agent three model-facing tools over the public GitHub REST API — no API key required.
 
-> Topic: [`dsh-plugin`](https://github.com/topics/dsh-plugin) ? Tested with `dsh` 0.1.0-rc.6
+> Topic: [`dsh-plugin`](https://github.com/topics/dsh-plugin) · Tested with `dsh` 0.1.0-rc.6
 
 ## Tools
 
@@ -16,9 +16,9 @@ GitHub Release Radar is a plugin for [DeepSeek Harness](https://github.com/deeps
 
 Example agent prompts:
 
-- ?What are the latest releases of `deepseek-ai/deepseek-harness`??
-- ?Compare the stars and licenses of the top 5 TypeScript agent frameworks.?
-- ?Has `ollama/ollama` published a stable release recently??
+- “What are the latest releases of `deepseek-ai/deepseek-harness`?”
+- “Compare the stars and licenses of the top 5 TypeScript agent frameworks.”
+- “Has `ollama/ollama` published a stable release recently?”
 
 ## Install
 
@@ -92,7 +92,7 @@ Example:
 
 ```sh
 pnpm install
-pnpm run build      # tsc ? lib/
+pnpm run build      # tsc → lib/
 pnpm test           # vitest
 pnpm pack           # npm tarball for dsh plugin add
 ```
@@ -101,68 +101,68 @@ See [VERIFICATION.md](./VERIFICATION.md) for the recorded build/test/boot checks
 
 ## License
 
-MIT ? 2026 zoahdev
+MIT © 2026 zoahdev
 
 ---
 
-## ??
+## 中文
 
-**dsh-github-release-radar?GitHub Release ???** ? [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) ???????? GitHub ?? REST API ? agent ???????????????????? API Key?
+**dsh-github-release-radar（GitHub Release 雷达）** 是 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 的社区插件，通过 GitHub 公开 REST API 给 agent 提供三个模型可直接调用的工具——无需任何 API Key。
 
-> ?????[`dsh-plugin`](https://github.com/topics/dsh-plugin) ? ?? `dsh` 0.1.0-rc.6 ??
+> 话题标签：[`dsh-plugin`](https://github.com/topics/dsh-plugin) · 已在 `dsh` 0.1.0-rc.6 实测
 
-## ??
+## 工具
 
-| ?? | ?? |
+| 工具 | 功能 |
 |---|---|
-| `github_releases` | ????????? Release?????????????????????? |
-| `github_repo` | ????????fork?open issues??????????????? |
-| `github_search` | ? GitHub ????????????????????? |
+| `github_releases` | 列出公开仓库最近的 Release（标签、日期、预发布标记、链接、正文预览）。 |
+| `github_repo` | 仓库概览：星标、fork、open issues、语言、许可证、最近更新时间。 |
+| `github_search` | 用 GitHub 搜索语法搜公开仓库，按星标或最近更新排序。 |
 
-?????
+示例提问：
 
-- ?deepseek-ai/deepseek-harness ???????????
-- ?????? 5 ? TypeScript agent ???????????
-- ?ollama/ollama ???????????
+- “deepseek-ai/deepseek-harness 最近发布了什么版本？”
+- “对比排名前 5 的 TypeScript agent 框架的星标和许可证。”
+- “ollama/ollama 最近有稳定版发布吗？”
 
-## ??
+## 安装
 
-???`dsh` CLI 0.1.0-rc.6+?[????](https://github.com/deepseek-ai/deepseek-harness#readme)??
+前置：`dsh` CLI 0.1.0-rc.6+（[安装教程](https://github.com/deepseek-ai/deepseek-harness#readme)）。
 
 ```sh
-# ? GitHub ??
+# 从 GitHub 安装
 dsh plugin --profile web add github:zoahdev/dsh-github-release-radar
 
-# ?? npm / tarball ??
+# 或从 npm / tarball 安装
 dsh plugin --profile web add dsh-github-release-radar
 dsh plugin --profile web add ./dsh-github-release-radar-0.1.0.tgz
 ```
 
-??? git ???????????`dsh` ????? profile ? `pnpm-workspace.yaml` ??????????? `dsh web`?
+首次从 git 安装需要允许构建脚本（`dsh` 会提示你向 profile 的 `pnpm-workspace.yaml` 添加哪一行）。装完重启 `dsh web`。
 
-## ??
+## 配置
 
-??????? `cordis.yml`?
+全部可选，写入 `cordis.yml`：
 
-| ??? | ?? | ??? | ?? |
+| 配置项 | 类型 | 默认值 | 说明 |
 |---|---|---|---|
-| `githubToken` | string | ? | GitHub token?????? 60 ?/?????????????? |
-| `timeoutMs` | number | `10000` | ????????? |
-| `defaultLimit` | number | `5` | ???? `limit` ????????? |
-| `bodyPreviewChars` | number | `500` | Release ?????????? |
-| `userAgent` | string | `dsh-github-release-radar/0.1.0` | ?? GitHub API ? User-Agent? |
+| `githubToken` | string | 无 | GitHub token，可提高匿名 60 次/小时的限流；切勿提交到仓库。 |
+| `timeoutMs` | number | `10000` | 请求超时（毫秒）。 |
+| `defaultLimit` | number | `5` | 模型未传 `limit` 时的默认返回条数。 |
+| `bodyPreviewChars` | number | `500` | Release 正文预览最大字符数。 |
+| `userAgent` | string | `dsh-github-release-radar/0.1.0` | 请求 GitHub API 的 User-Agent。 |
 
-## ??
+## 开发
 
 ```sh
 pnpm install
-pnpm run build      # tsc ? lib/
+pnpm run build      # tsc → lib/
 pnpm test           # vitest
-pnpm pack           # ?? tarball ? dsh plugin add ??
+pnpm pack           # 打包 tarball 供 dsh plugin add 安装
 ```
 
-??/??/??????? [VERIFICATION.md](./VERIFICATION.md)?
+构建/测试/启动验证记录见 [VERIFICATION.md](./VERIFICATION.md)。
 
-## ???
+## 许可证
 
-MIT ? 2026 zoahdev
+MIT © 2026 zoahdev
