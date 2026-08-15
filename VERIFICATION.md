@@ -21,8 +21,8 @@ Result: 2 test files, 15 tests, all passed. Coverage includes GitHub API mapping
 ## 3. Package and install into a dsh profile
 
 ```sh
-pnpm pack                                   # → dsh-github-release-radar-0.1.0.tgz
-dsh plugin --profile web add ./dsh-github-release-radar-0.1.0.tgz
+pnpm pack                                   # → dsh-github-release-radar-0.2.0.tgz
+dsh plugin --profile web add ./dsh-github-release-radar-0.2.0.tgz
 ```
 
 Result: package added to the `web` profile; `dsh --profile web --dump-config` shows the `dsh-github-release-radar` layer after `@deepseek-ai/dsh-base`.
